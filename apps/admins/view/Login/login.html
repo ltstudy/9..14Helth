@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>欢迎登录医疗网后台管理系统</title>
+    <link href="admin/logins/css/style.css" rel="stylesheet" type="text/css" />
+    <script language="JavaScript" src="admin/logins/js/jquery.js"></script>
+    <script src="admin/logins/js/cloud.js" type="text/javascript"></script>
+    <script src="admin/logins/js/md5.js" type="text/javascript"></script>
+    <script language="javascript">
+        $(function(){
+            $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+            $(window).resize(function(){
+                $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+            })
+        });
+    </script>
+
+</head>
+
+<body style="background-color:#1c77ac; background-image:url(__PUBLIC__/images/light.png); background-repeat:no-repeat; background-position:center top; overflow:hidden;">
+
+
+
+<div id="mainBody">
+    <div id="cloud1" class="cloud"></div>
+    <div id="cloud2" class="cloud"></div>
+</div>
+
+
+<div class="logintop">
+    <span>欢迎登录医疗后台管理界面平台</span>
+    <ul>
+        <li><a href="/">回首页</a></li>
+        <li><a href="#">帮助</a></li>
+        <li><a href="#">关于</a></li>
+    </ul>
+</div>
+
+<div class="loginbody">
+
+    <span class="systemlogo"></span>
+
+    <div class="loginbox">
+
+        <ul>
+            <li><input name="" type="text" class="loginuser" value="admin" maxlength="24" id="j_username" onBlur="return checkUsername()" placeholder="请输入用户名" onclick="JavaScript:this.value=''"/></li><span id="j_usernameErrorDiv"></span>
+            <li><input name="" type="password" class="loginpwd" value="密码" maxlength="24" id="j_password" onBlur="return checkPassword()" placeholder="请输入密码" onclick="JavaScript:this.value=''"/></li><span id="j_passwordErrorDiv"></span>
+            <li><input name="" type="button" class="loginbtn" value="登录" onclick="loginCheck();"/><label><input name="" type="checkbox" value="" checked="checked" id="ifRemember"/>记住密码</label><label><a href="pwd_list">忘记密码？</a></label><label><a href="login_index">立即注册</a></label></li><span id="j_yzmErrorDiv"></span>
+        </ul>
+    </div>
+
+</div>
+<script>
+    var v1 = false;
+    var v2 = false;
+    //验证用户名
+    function checkUsername()
+    {
+
+        var username = $("#j_username").val();
+        var usernameRegex = /^[a-zA-Z0-9]{6,24}$/;
+        var nullFlag=(username==""||username=="请输入用户名");
+        if (nullFlag==true)
+        {
+            $("#j_usernameErrorDiv").html("请输入用户名");
+            v1 = false;
+            return false;
+        }
+        else
+        {
+            $("#j_yzmErrorDiv").empty();
+            $("#j_usernameErrorDiv").empty();
+        }
+        var usernameFlag=usernameRegex.test(username);
+
+        if (!usernameFlag)
+        {
+            $("#j_usernameErrorDiv").html("请输入正确格式的用户名");
+            v1 = false;
+            return false;
+        }
+        else
+        {
+            $("#j_yzmErrorDiv").empty();
+            $("#j_usernameErrorDiv").empty();
+            v1 = true;
+        }
+        return true;
+    }
+    //验证密码
+    function checkPassword()
+    {
+
+        var password = $("#j_password").val();
+        var passwordRegex = /^[a-zA-Z0-9_]{6,24}$/;
+        var nullFlag=(password==""||password=="请输入密码");
+        if (nullFlag==true)
+        {
+            $("#j_passwordErrorDiv").empty();
+            $("#j_passwordErrorDiv").html("密码不能为空");
+            v2 = false;
+            return false;
+        }
+        else
+        {
+            $("#j_yzmErrorDiv").empty();
+            $("#j_passwordErrorDiv").empty();
+        }
+        var passwordFlag=passwordRegex.test(password);
+
+        if(!passwordFlag){
+            $("#j_passwordErrorDiv").html("请检查密码格式");
+            v2 = false;
+            return false;
+        }
+        else
+        {
+            $("#j_yzmErrorDiv").empty();
+            $("#j_passwordErrorDiv").empty();
+            v2 = true;
+        }
+        return true;
+    }
+    //登录验证
+    function loginCheck()
+    {
+
+        if (v1&&v2)
+        {
+
+            var username = $("#j_username").val();
+            var pwd = $("#j_password").val();
+            var password = hex_md5(pwd);
+            var checkname = $("#ifRemember").is(':checked');
+//                $.ajax({
+//                    type: "GET",
+////							   url: "http://api.publicfunction.cn/login",
+//                    url: "http://api.publicfunction.cn/login",
+//                    dataType: "jsonp",
+//                    data: {"username":username,"password":password},
+//                    success: function(msg)
+//                    {
+////							   	console.log(msg)
+//                        if(msg.code != 200)
+//                        {
+//                            $("#j_yzmErrorDiv").html(msg.message);
+//                        }
+//                        else
+//                        {
+//                            if (checkname)//判断是否自动登录
+//                            {
+//                                localStorage.setItem('user_id',msg.data.user_id);
+//                                localStorage.setItem('username',username);
+//                                localStorage.setItem('token',msg.data.token);
+//                            }
+//                            else
+//                            {
+//                                localStorage.setItem('user_id',msg.data.user_id);
+//                                localStorage.setItem('username',username);
+//                                localStorage.setItem('token',msg.data.token);
+//                            }
+//                            location.href = msg.redirect;
+//                        };
+//
+//                    }
+//                });
+            var url ='index_index';
+            $.post(url,{username:username,password:password},function(msg){
+                if(msg.status==0)
+                {
+                    location.href='index_admin';
+                }
+                else if(msg.status==1)
+                {
+                    $("#j_usernameErrorDiv").html(msg.error);
+                    $("#j_passwordErrorDiv").html('');
+                }
+                else if(msg.status==2)
+                {
+                    $("#j_passwordErrorDiv").html(msg.error);
+                    $("#j_usernameErrorDiv").html('');
+                }
+            },'json');
+            $("#j_yzmErrorDiv").empty();
+
+
+        }
+        else{
+            $("#j_yzmErrorDiv").html("请仔细检查账号密码格式");
+            return false;
+        }
+
+    }
+
+</script>
+
+
+<div class="loginbm">医疗后台1.0v</div>
+</body>
+</html>
